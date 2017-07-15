@@ -1,0 +1,24 @@
+Trigger For Coupon auto decrement
+
+create or replace trigger cor after update on orders for each row begin declare vid int; declare co varchar(30); declare cor varchar(30); select id,new.coupon,old.coupon into vid,co,cor from orders where orders.id=new.id; insert into mess values(vid,cor,co); update coupon set totalVouchers=totalVouchers-1 where voucherCode=co; end;
+
+VIEW 1:( AVG RATINGS)
+
+CREATE VIEW `rest_rating` AS select `ra`.`resid` AS `resid`,avg(`ra`.`ratings`) AS `AVG` from (`rests` `re` join `ratings` `ra`) where (`re`.`id` = `ra`.`resid`) group by `ra`.`resid`;
+
+VIEW 2: (ORDERING)
+
+create view ordering as select s.*,a.AVG from rests s, rest_rating a where s.id=a.resid;
+
+
+RATINGS:
+
+DROP TRIGGER IF EXISTS `rt_updt`;CREATE DEFINER=`root`@`localhost` TRIGGER `rt_updt` AFTER INSERT ON `ratings` FOR EACH ROW BEGIN DECLARE r int; DECLARE p int; SELECT id into r from rests where id=new.resid; SELECT avg(ratings) INTO p from ratings ra where ra.ratings=r; update rest_delivery_area set rest_delivery_area.ratings = p where rest_delivery_area.rest_id=r; END 
+
+
+create table cuisines(rid int, cuisine varchar(15), PRIMARY key(rid,cuisine));
+
+
+DROP TRIGGER IF EXISTS `rt_updt`;CREATE DEFINER=`root`@`localhost` TRIGGER `rt_updt` AFTER INSERT ON `ratings` FOR EACH ROW BEGIN DECLARE r int; DECLARE p int; SELECT id into r from rests ra where ra.id=new.resid; SELECT avg(ratings) INTO p from ratings ra where ra.resid=r; update rest_delivery_area set rest_delivery_area.ratings = p where rest_delivery_area.rest_id=r; 
+    -> update rests set ratings=p where id=r; end; 
+    -> $

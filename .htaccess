@@ -1,0 +1,15 @@
+Options -Indexes
+
+ErrorDocument 404 /404.php
+ErrorDocument 403 /404.php
+
+RewriteEngine On
+
+RewriteCond %{HTTP_HOST} !^www\. [NC]
+RewriteRule ^(.*)$ http://www.%{HTTP_HOST}/$1 [R=301,L]
+
+RewriteBase /
+RewriteRule (.*)-(.*).html$ 	restaurants-menu.php?r=$2	 [QSA,NC,L]
+
+# Resolve .php file for extensionless php urls
+RewriteRule ^([^/.]+)$ $1.php [L]
